@@ -1,0 +1,17 @@
+{
+  "db": {
+    "adapter": "mysql",
+    "dbname": "goqor",
+    "debug": true,
+    "host": "192.168.169.128",
+    "password": "abc123",
+    "port": "3306",
+    "user": "coder"
+  },
+  "jwt_signing_method": "RS256",
+  "log": {
+    "level": 5
+  },
+  "server_port": 3000,
+  "use_https": false
+}
