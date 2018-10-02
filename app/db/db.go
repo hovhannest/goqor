@@ -31,7 +31,7 @@ func (appConfig *Db) ConfigureApplication(app *Interface.AppConfig) {
 	_config.SetDefault(keyForPackage("adapter"),"mysql")
 	_config.SetDefault(keyForPackage("User"),"coder")
 	_config.SetDefault(keyForPackage("Password"),"abc123")
-	_config.SetDefault(keyForPackage("Host"),"192.168.169.128")
+	_config.SetDefault(keyForPackage("Host"),"192.168.254.130")
 	_config.SetDefault(keyForPackage("Port"),"3306")
 	_config.SetDefault(keyForPackage("dbName"),"goqor")
 	_config.SetDefault(keyForPackage("DEBUG"),true)
@@ -57,6 +57,8 @@ func (appConfig *Db) ConfigureApplication(app *Interface.AppConfig) {
 		//validations.RegisterCallbacks(DB)
 		//media.RegisterCallbacks(DB)
 		//publish2.RegisterCallbacks(DB)
+
+		MigrateAll()
 	} else {
 		panic(err)
 	}

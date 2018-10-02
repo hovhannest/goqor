@@ -9,9 +9,9 @@ import (
 	"goqor1.0/app/auth"
 	appConfig "goqor1.0/app/config"
 	"goqor1.0/app/db"
-	_ "goqor1.0/app/db/migrations"
 	"goqor1.0/app/home"
 	"goqor1.0/app/i18n"
+	"goqor1.0/app/index"
 	"goqor1.0/app/static"
 	"goqor1.0/bindatafs"
 	"goqor1.0/config"
@@ -68,6 +68,7 @@ func main() {
 	App.Use(i18n.New())
 	App.Use(auth.New()) // call App.Use(db.New()) before this
 	App.Use(static.New())
+	App.Use(index.New())
 	App.Use(home.New())
 
 	//render.RegisterFuncMap("Greet", func(name string) string { return "Hello " + name })

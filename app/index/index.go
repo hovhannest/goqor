@@ -1,4 +1,4 @@
-package home
+package index
 
 import (
 	"github.com/go-chi/chi"
@@ -10,14 +10,14 @@ import (
 	"path"
 )
 
-type HomeConfigurations struct {
+type IngexConfigurations struct {
 	Render *render.Render
 }
 
-func (appConfig *HomeConfigurations) ConfigureApplication(app *Interface.AppConfig) {
+func (appConfig *IngexConfigurations) ConfigureApplication(app *Interface.AppConfig) {
 	appConfig.Render = utils.CopyRender(app.Render)
-	app.Router.Route("/home",  func(r chi.Router) {
-		r.Use(auth.App.Authority.Authorize())
+	appConfig.Render.RegisterViewPath(path.Join("app", "index", "views"))
+	app.Router.Route("/", func(r chi.Router) {
 		r.Get("/", appConfig.index)
 		r.Route("/hello", func(r chi.Router) {
 			r.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -28,9 +28,14 @@ func (appConfig *HomeConfigurations) ConfigureApplication(app *Interface.AppConf
 }
 
 func New() Interface.MicroAppInterface {
-	return &HomeConfigurations{}
+	return &IngexConfigurations{}
 }
 
-func (appConfig *HomeConfigurations) index(w http.ResponseWriter, r *http.Request) {
-	appConfig.Render.Layout("application18").Execute(path.Join("themes", "theme1", "home111"), r.Context(), r, w)
+func (appConfig *IngexConfigurations) index(w http.ResponseWriter, r *http.Request) {
+	if(auth.App.Authority.Allow("", r)) {
+		w.Write([]byte("Authorised "))
+	} else {
+		w.Write([]byte("Unauthorised"))
+	}
+	appConfig.Render.Layout("application18").Execute(path.Join("themes", "theme1", "index"), r.Context(), r, w)
 }

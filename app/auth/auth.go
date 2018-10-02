@@ -2,12 +2,15 @@ package auth
 
 import (
 	"github.com/qor/auth"
+	"github.com/qor/auth/authority"
+	"github.com/qor/auth/providers/google"
 	"github.com/qor/auth/providers/password"
 	"github.com/qor/auth_themes/clean"
 	"github.com/qor/qor"
 	"github.com/qor/qor/utils"
 	"github.com/qor/redirect_back"
 	"github.com/qor/render"
+	"github.com/qor/roles"
 	"github.com/qor/session/manager"
 	"goqor1.0/app/Interface"
 	"goqor1.0/app/db"
@@ -17,8 +20,11 @@ import (
 	"net/http"
 )
 
+var App *AuthConfigurations
+
 type AuthConfigurations struct {
 	Auth *auth.Auth
+	Authority *authority.Authority
 }
 
 func (appConfig *AuthConfigurations) ConfigureApplication(app *Interface.AppConfig) {
@@ -44,9 +50,23 @@ func (appConfig *AuthConfigurations) ConfigureApplication(app *Interface.AppConf
 				},
 			)},
 		})
+		appConfig.Authority = authority.New(&authority.Config{
+			Auth: appConfig.Auth,
+			Role: roles.Global, // default configuration
+			AccessDeniedHandler: func(w http.ResponseWriter, req *http.Request) {
+				http.Redirect(w, req, "/auth/login", http.StatusSeeOther)
+			},
+		})
+
+		App = appConfig
 	}
 
 	appConfig.Auth.RegisterProvider(password.New(&password.Config{}))
+	appConfig.Auth.RegisterProvider(google.New(&google.Config{
+		ClientID:     "google client id",
+		ClientSecret: "google client secret",
+	}))
+
 
 	app.Router.Mount("/auth/", appConfig.Auth.NewServeMux())
 }
