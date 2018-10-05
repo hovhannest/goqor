@@ -58,7 +58,6 @@ func (appConfig *Db) ConfigureApplication(app *Interface.AppConfig) {
 		//media.RegisterCallbacks(DB)
 		//publish2.RegisterCallbacks(DB)
 
-		MigrateAll()
 	} else {
 		panic(err)
 	}

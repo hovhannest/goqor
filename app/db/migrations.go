@@ -1,11 +1,11 @@
 package db
 
 import (
-	"github.com/qor/auth/auth_identity"
+	"goqor1.0/app/models"
 )
 
 func MigrateAll() {
-	AutoMigrate(&auth_identity.AuthIdentity{})
+	AutoMigrate(&models.User{}, &models.UserAuthIdentity{})
 }
 
 // AutoMigrate run auto migration

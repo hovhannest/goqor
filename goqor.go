@@ -6,6 +6,7 @@ import (
 	"github.com/qor/render"
 	"goqor1.0/app"
 	"goqor1.0/app/Interface"
+	"goqor1.0/app/admin"
 	"goqor1.0/app/auth"
 	appConfig "goqor1.0/app/config"
 	"goqor1.0/app/db"
@@ -70,6 +71,10 @@ func main() {
 	App.Use(static.New())
 	App.Use(index.New())
 	App.Use(home.New())
+
+	App.Use(admin.New())
+
+	db.MigrateAll()
 
 	//render.RegisterFuncMap("Greet", func(name string) string { return "Hello " + name })
 	//render.RegisterFuncMap("render_header", func() template.HTML { return "<h1>render_header</h1>" })
