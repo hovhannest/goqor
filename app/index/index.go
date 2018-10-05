@@ -32,7 +32,9 @@ func New() Interface.MicroAppInterface {
 }
 
 func (appConfig *IngexConfigurations) index(w http.ResponseWriter, r *http.Request) {
-	if(auth.App.Authority.Allow("", r)) {
+	if auth.App.Authority.Allow("admin", r) {
+		w.Write([]byte("Authorised As Admin!! "))
+	} else if auth.App.Authority.Allow("", r) {
 		w.Write([]byte("Authorised "))
 	} else {
 		w.Write([]byte("Unauthorised"))

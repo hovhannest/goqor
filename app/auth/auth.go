@@ -20,6 +20,7 @@ import (
 	"html/template"
 	"net/http"
 	"reflect"
+	"regexp"
 )
 
 var App *AuthConfigurations
@@ -79,7 +80,13 @@ func (appConfig *AuthConfigurations) ConfigureApplication(app *Interface.AppConf
 			},
 		})
 
+		appConfig.Authority.Role.Register("", func(req *http.Request, currentUser interface{}) bool {
+			return currentUser != nil && currentUser.(* models.User) != nil
+		})
+
 		App = appConfig
+
+		ConfigureAdminApplication()
 	}
 
 	l := appConfig.Auth.GetProviders()
@@ -92,6 +99,40 @@ func (appConfig *AuthConfigurations) ConfigureApplication(app *Interface.AppConf
 
 
 	app.Router.Mount("/auth/", appConfig.Auth.NewServeMux())
+}
+
+// embed regexp.Regexp in a new type so we can extend it
+type roleChacker struct {
+	*regexp.Regexp
+}
+
+// add a new method to our new regular expression type
+func (r * roleChacker) findInRole(role string) bool {
+	captures := make(map[string]string)
+
+	match := r.FindStringSubmatch(role)
+	if match == nil {
+		return false
+	}
+
+	for i, name := range r.SubexpNames() {
+		// Ignore the whole regexp match and unnamed groups
+		if i == 0 || name == "" {
+			continue
+		}
+
+		captures[name] = match[i]
+
+	}
+	return captures["firstRole"] != ""
+}
+
+func chaeckRoleContains(role string, contains string) bool {
+	if len(contains) <= 0 {
+		return  false
+	}
+	r := roleChacker{regexp.MustCompile("(^|[;]|[\\s]+)(?P<firstRole>"+contains+")([\\s]+|;|$)")}
+	return r.findInRole(role)
 }
 
 func New() Interface.MicroAppInterface {

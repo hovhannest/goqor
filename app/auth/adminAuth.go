@@ -4,14 +4,16 @@ import (
 	"fmt"
 	"github.com/qor/admin"
 	"github.com/qor/qor"
-	"github.com/qor/roles"
+	"goqor1.0/app/models"
 	"net/http"
 )
 
 
-func init() {
-	roles.Register("admin", func(req *http.Request, currentUser interface{}) bool {
-		return currentUser != nil
+func ConfigureAdminApplication() {
+	App.Authority.Role.Register("admin", func(req *http.Request, currentUser interface{}) bool {
+		fmt.Print("Function 2")
+		return currentUser != nil  && currentUser.(* models.User) != nil &&
+			chaeckRoleContains( currentUser.(* models.User).Role, "admin")
 	})
 }
 
