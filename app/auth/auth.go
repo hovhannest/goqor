@@ -13,6 +13,7 @@ import (
 	"github.com/qor/roles"
 	"github.com/qor/session/manager"
 	"goqor1.0/app/Interface"
+	"goqor1.0/app/auth/apiProvider"
 	"goqor1.0/app/db"
 	"goqor1.0/app/i18n"
 	"goqor1.0/app/models"
@@ -91,7 +92,7 @@ func (appConfig *AuthConfigurations) ConfigureApplication(app *Interface.AppConf
 
 	l := appConfig.Auth.GetProviders()
 	fmt.Print(l)
-	//appConfig.Auth.RegisterProvider(password.New(&password.Config{}))
+	appConfig.Auth.RegisterProvider(apiProvider.New(&apiProvider.Config{}))
 	//appConfig.Auth.RegisterProvider(google.New(&google.Config{
 	//	ClientID:     "google client id",
 	//	ClientSecret: "google client secret",
