@@ -5,6 +5,7 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/qor/render"
 	"goqor1.0/app"
+	"goqor1.0/app/api"
 	"goqor1.0/app/Interface"
 	"goqor1.0/app/admin"
 	"goqor1.0/app/auth"
@@ -71,6 +72,8 @@ func main() {
 	App.Use(static.New())
 	App.Use(index.New())
 	App.Use(home.New())
+
+	App.Use(api.New())
 
 	App.Use(admin.New())
 
