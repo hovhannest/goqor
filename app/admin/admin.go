@@ -1,6 +1,7 @@
 package admin
 
 import (
+	"github.com/go-chi/chi"
 	"github.com/qor/admin"
 	"goqor1.0/app/Interface"
 	"goqor1.0/app/auth"
@@ -13,8 +14,11 @@ type AdminConfigurations struct {
 }
 
 func (appConfig *AdminConfigurations) ConfigureApplication(app *Interface.AppConfig) {
-	admin := admin.New(&appConfig.Coonfig)
-	app.Router.Mount("/admin", admin.NewServeMux("/admin"))
+	app.Router.Route("/admin",  func(r chi.Router) {
+		admin := admin.New(&appConfig.Coonfig)
+		r.Use(auth.App.Authority.Authorize("admin"))
+		r.Mount("/", admin.NewServeMux("/admin"))
+	})
 }
 
 func New() Interface.MicroAppInterface {
