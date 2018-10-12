@@ -7,6 +7,7 @@ import (
 	"goqor1.0/app/auth"
 	"goqor1.0/app/db"
 	"goqor1.0/app/i18n"
+	. "goqor1.0/app/admin/components"
 )
 
 type AdminConfigurations struct {
@@ -15,9 +16,12 @@ type AdminConfigurations struct {
 
 func (appConfig *AdminConfigurations) ConfigureApplication(app *Interface.AppConfig) {
 	app.Router.Route("/admin",  func(r chi.Router) {
-		admin := admin.New(&appConfig.Coonfig)
+		Admin := admin.New(&appConfig.Coonfig)
+
+		ConfigUsers(Admin)
+
 		r.Use(auth.App.Authority.Authorize("admin"))
-		r.Mount("/", admin.NewServeMux("/admin"))
+		r.Mount("/", Admin.NewServeMux("/admin"))
 	})
 }
 
